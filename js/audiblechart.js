@@ -85,10 +85,20 @@ function checkPoint(chart, series, point) {
 
 function drawAudibleTimeseries(data) {
     return Highcharts.chart('container', {
-        xAxis: {
-            categories: data.categories
+        title: {
+            text: data.title
         },
-
+        xAxis: {
+            categories: data.categories,
+            title: {
+                text: data.x_label
+            }
+        },
+        yAxis: {
+            title: {
+                text: data.y_label
+            }
+        },
         plotOptions: {
             series: {
                 cursor: 'pointer',
@@ -160,8 +170,10 @@ function drawAudibleTimeseries(data) {
     });
 }
 
-function setupAudibleChart(data) {
+function setupAudibleChart(data, settings) {
 
     var chart = drawAudibleTimeseries(data);
+    tempo = settings.tempo;
+
     playSeries(chart, 0);
 }
