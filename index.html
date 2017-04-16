@@ -38,8 +38,27 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script src="js/AcMusic.js"></script>
-
 <script src="js/audiblechart.js"></script>
+
+
+
+<script>
+    var data = {
+        name: 'Chart abc',
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        series:  [{
+            name: 'g.d.p.',
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+        },{
+            name: 'c.p.r.',
+            data: [129.9, 121.5, 106.4, 89.2, 74.0, 46.0, 85.6, 98.5, 108.4, 78.1, 70.6, 60.4]
+        }]
+    }
+
+    $(document).ready(setupAudibleChart(data));
+</script>
+
+
 
 </body>
 </html>

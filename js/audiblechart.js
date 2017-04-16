@@ -4,11 +4,16 @@
 //
 // (function() {
 var ac = new AudioContext();
-var notes = [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4];
-var notes2 = [129.9, 121.5, 106.4, 89.2, 74.0, 46.0, 85.6, 98.5, 108.4, 78.1, 70.6, 60.4];
-var tempo = 240;
+var tempo = 480;
 var activePoint = 0;
 var activeSeries = 0;
+
+const ENTER_KEY = 13;
+const UP_KEY = 38;
+const DOWN_KEY = 40;
+const LEFT_KEY = 37;
+const RIGHT_KEY = 39;
+const SPACE_KEY = 32;
 
 function playTune(tune) {
     var sequence = new AcMusic.Sequence( ac, tempo );
@@ -38,6 +43,7 @@ function playSeries(chart, series) {
     );
     msg.volume = 1;
     msg.onend = function (event) {
+        // When message is finished play the sequence
         var sequence = new AcMusic.Sequence( ac, tempo );
 
         for(point in chart.series[series].points) {
@@ -50,8 +56,6 @@ function playSeries(chart, series) {
     };
 
     window.speechSynthesis.speak(msg);
-
-
 }
 
 function speakPoint(chart, series, point) {
@@ -64,15 +68,25 @@ function speakPoint(chart, series, point) {
     window.speechSynthesis.speak(msg);
 }
 
+function speakSeries(chart, series) {
+    var msg = new SpeechSynthesisUtterance(
+        chart.series[series].name
+    );
+    msg.volume = 1;
+    window.speechSynthesis.speak(msg);
+}
+
+
+
 function checkPoint(chart, series, point) {
     chart.tooltip.refresh(chart.series[series].data[point]);
     playNote(chart.series[series].data[point].y);
 }
 
-function drawAudibleChart() {
+function drawAudibleTimeseries(data) {
     return Highcharts.chart('container', {
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            categories: data.categories
         },
 
         plotOptions: {
@@ -91,30 +105,30 @@ function drawAudibleChart() {
             }
         },
 
-        series: [{
-            name: 'g.d.p.',
-            data: notes
-        },{
-            name: 'c.p.r.',
-            data: notes2
-        }]
+        series: data.series
+
     }, function(chart){
 
         $(document).keydown(function(e){
-
             switch(e.which) {
-                case 32:
+                case ENTER_KEY:
+                    // ENTER
+                    playSeries(chart, activeSeries);
+                    break;
+
+                case SPACE_KEY:
                     // SPACE
                     speakPoint(chart, activeSeries, activePoint);
                     break;
 
-                case 37:
+                case LEFT_KEY:
                     // LEFT
                     if(activePoint>0)
                         activePoint--;
                     checkPoint(chart, activeSeries, activePoint)
                     break;
-                case 38:
+
+                case UP_KEY:
                     // UP
                     activeSeries = activeSeries - 1;
                     if(activeSeries < 0 ) { activeSeries = chart.series.length - 1; }
@@ -122,14 +136,16 @@ function drawAudibleChart() {
                     checkPoint(chart, activeSeries, activePoint);
                     break;
 
-                case 39:
+                case RIGHT_KEY:
                     // RIGHT
                     if(activePoint+1 < chart.series[activeSeries].data.length)
                         activePoint++;
 
                     checkPoint(chart, activeSeries, activePoint);
                     break;
-                case 40:
+
+                case DOWN_KEY:
+                    // DOWN
                     activeSeries = activeSeries + 1;
                     if(activeSeries >= chart.series.length) { activeSeries = 0; }
 
@@ -144,10 +160,8 @@ function drawAudibleChart() {
     });
 }
 
-function setup() {
-    // playTune(notes);
-    var chart = drawAudibleChart();
+function setupAudibleChart(data) {
+
+    var chart = drawAudibleTimeseries(data);
     playSeries(chart, 0);
 }
-
-$(document).ready(setup);
