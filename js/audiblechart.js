@@ -4,7 +4,7 @@
 //
 // (function() {
 var ac = new AudioContext();
-var tempo = 480;
+var tempo = 360;
 var activePoint = 0;
 var activeSeries = 0;
 
@@ -23,6 +23,7 @@ function playTune(tune) {
         sequence.push(new AcMusic.Note(frequency + ' q'))
     }
     sequence.loop = false;
+    sequence.smoothing = 0.25;
     sequence.gain.gain.value = 0.1;
     sequence.play();
 }
@@ -51,6 +52,7 @@ function playSeries(chart, series) {
             sequence.push(new AcMusic.Note(frequency + ' q'))
         }
         sequence.loop = false;
+        sequence.smoothing = 0.5;
         sequence.gain.gain.value = 0.1;
         sequence.play();
     };
