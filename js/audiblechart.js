@@ -3,7 +3,14 @@
  */
 //
 // (function() {
-var ac = new AudioContext();
+var ac;
+if('webkitAudioContext' in window) {
+    ac = new webkitAudioContext();
+} else {
+    ac = new AudioContext();
+}
+
+
 var tempo = 360;
 var activePoint = 0;
 var activeSeries = 0;
@@ -67,6 +74,8 @@ function speakPoint(chart, series, point) {
         chart.series[series].data[point].y
     );
     msg.volume = 1;
+    console.log(voices);
+    msg.voice = voices[10];
     window.speechSynthesis.speak(msg);
 }
 

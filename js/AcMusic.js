@@ -87,7 +87,13 @@ Note.getDuration = function( symbol ) {
 
 // create a new Sequence
 function Sequence( ac, tempo, arr ) {
-    this.ac = ac || new AudioContext();
+    //this.ac = ac || new AudioContext();
+    if('webkitAudioContext' in window) {
+        this.ac = ac || new webkitAudioContext();
+    } else {
+        this.ac = ac || new AudioContext();
+    }
+
     this.createFxNodes();
     this.tempo = tempo || 120;
     this.loop = true;
