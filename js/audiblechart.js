@@ -10,7 +10,6 @@ if('webkitAudioContext' in window) {
     ac = new AudioContext();
 }
 
-
 var tempo = 360;
 var activePoint = 0;
 var activeSeries = 0;
@@ -74,8 +73,6 @@ function speakPoint(chart, series, point) {
         chart.series[series].data[point].y
     );
     msg.volume = 1;
-    console.log(voices);
-    msg.voice = voices[10];
     window.speechSynthesis.speak(msg);
 }
 
@@ -131,6 +128,7 @@ function drawAudibleTimeseries(data) {
     }, function(chart){
 
         $(document).keydown(function(e){
+            console.log(e.which);
             switch(e.which) {
                 case ENTER_KEY:
                     // ENTER
