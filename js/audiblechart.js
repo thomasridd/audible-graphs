@@ -10,7 +10,7 @@ if('webkitAudioContext' in window) {
     ac = new AudioContext();
 }
 
-var tempo = 360;
+var tempo = 240;
 var activePoint = 0;
 var activeSeries = 0;
 
@@ -20,6 +20,9 @@ const DOWN_KEY = 40;
 const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
 const SPACE_KEY = 32;
+
+const PITCH_MIN = 300;
+const PITCH_MAX = 600;
 
 function playTune(tune) {
     var sequence = new AcMusic.Sequence( ac, tempo );
@@ -34,8 +37,8 @@ function playTune(tune) {
     sequence.play();
 }
 
-function playNote(note) {
-    frequency = 300.00 + note;
+function playNote(chart, note) {
+    frequency = frequencyChartValue(chart, note);
     var sequence = new AcMusic.Sequence( ac, tempo );
     sequence.push(new AcMusic.Note(frequency + ' q'));
     sequence.loop = false;
@@ -54,7 +57,7 @@ function playSeries(chart, series) {
         var sequence = new AcMusic.Sequence( ac, tempo );
 
         for(point in chart.series[series].points) {
-            frequency = 300.00 + chart.series[series].points[point].y;
+            frequency = frequencyChartValue(chart, chart.series[series].points[point].y);
             sequence.push(new AcMusic.Note(frequency + ' q'))
         }
         sequence.loop = false;
@@ -64,6 +67,13 @@ function playSeries(chart, series) {
     };
 
     window.speechSynthesis.speak(msg);
+}
+
+function frequencyChartValue(chart, value) {
+
+    min = chart.yAxis[0].min;
+    max = chart.yAxis[0].max;
+    return PITCH_MIN + (PITCH_MAX - PITCH_MIN) * (value - min)/(max-min);
 }
 
 function speakPoint(chart, series, point) {
@@ -88,7 +98,7 @@ function speakSeries(chart, series) {
 
 function checkPoint(chart, series, point) {
     chart.tooltip.refresh(chart.series[series].data[point]);
-    playNote(chart.series[series].data[point].y);
+    playNote(chart, chart.series[series].data[point].y);
 }
 
 function drawAudibleTimeseries(data) {
@@ -115,8 +125,7 @@ function drawAudibleTimeseries(data) {
                         click: function () {
                             activePoint = this.index;
                             activeSeries = this.series.index;
-
-                            playNote(this.y);
+                            playNote(this.series.chart, this.y);
                         }
                     }
                 }
