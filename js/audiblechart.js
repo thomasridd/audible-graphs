@@ -193,5 +193,22 @@ function setupAudibleChart(data, settings) {
     var chart = drawAudibleTimeseries(data);
     tempo = settings.tempo;
 
-    playSeries(chart, 0);
+    playDescription(chart);
+}
+
+function playDescription(chart) {
+
+    var title = chart.title.textStr;
+    var xaxis = chart.xAxis[0].axisTitle.textStr;
+    var yaxis = chart.yAxis[0].axisTitle.textStr;
+    var start = chart.xAxis[0].categories[0];
+
+    var str = 'You are in a line graph. Title: ' + title + ', x-axis: ' + xaxis + '; y-axis: ' + yaxis + '.\n';
+    str = str + 'Starting at ' + start + '.\n'
+    str = str + 'Press enter to hear the line played as a sound. \n'
+    str = str + 'Press space to speak the year and value of a point'
+
+    var msg = new SpeechSynthesisUtterance(str);
+    msg.volume = 1;
+    window.speechSynthesis.speak(msg);
 }
