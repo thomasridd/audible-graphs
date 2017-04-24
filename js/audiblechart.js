@@ -10,7 +10,7 @@ if('webkitAudioContext' in window) {
     ac = new AudioContext();
 }
 
-var tempo = 240;
+var tempo = 120;
 var activePoint = 0;
 var activeSeries = 0;
 
